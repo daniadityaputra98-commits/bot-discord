@@ -12,21 +12,10 @@ module.exports = {
   CALL_WORD_REGEX: /(?:^|\s)(?:wo+|wok|wo~+|woy+|oi+|bot|wowo|wowo~|bro|bang|min)(?=\s|$|[!?.,~])/iu,
 
   // === GIF OTOMATIS BERDASARKAN KATA KUNCI ===
-  // Setiap ada pesan (bukan command) yang mengandung salah satu kata kunci
-  // di bawah, bot otomatis kirim GIF yang cocok.
-  //
-  // Format key   : kata/frasa pemicu, boleh lebih dari satu dipisah "|"
-  // Format value : STRING -> query pencarian ke GIPHY (butuh GIPHY_API_KEY)
-  //                ARRAY  -> daftar URL GIF langsung, dipilih random,
-  //                          TIDAK butuh API key sama sekali.
-  //
-  // Sudah dicampur ekspresi umum + istilah/slang yang lagi rame dipakai
-  // anak Indonesia tahun 2026. Silakan edit/tambah sesuai selera server kamu.
   // Kata kunci pemicu tetap memakai bahasa gaul sehari-hari (biar bot tetap
   // "nyambung" saat member ngobrol santai), tapi GIF yang dikirim balik
   // sengaja dipilih bernuansa anggun/berkelas, sesuai karakter bot sekarang.
   GIF_KEYWORDS: {
-    // --- ekspresi umum sehari-hari ---
     "wkwk|ngakak|kocak|lucu banget|awokwok": "elegant graceful laugh",
     "sedih|nangis|hiks|mewek": "gentle comfort hug elegant",
     "mantap|keren|gg|goks|gaskeun": "elegant applause well done",
@@ -43,7 +32,6 @@ module.exports = {
     "baper": "elegant blushing shy",
     "nolep|julid": "polite side eye elegant",
 
-    // --- slang/tren 2026, dijawab dengan gestur berkelas ---
     "delulu": "elegant daydreaming fantasy",
     "rizz|jago rizz": "charming gentleman wink elegant",
     "cooked|udah cooked|abis cooked": "dramatic faint elegant",
@@ -55,7 +43,6 @@ module.exports = {
     "skibidi": "royal butler formal bow",
     "main character": "regal spotlight elegant walk",
 
-    // --- aksi sayang / interaksi manis ke sesama user ---
     "peluk|hug dong": "elegant warm embrace",
     "cium|kiss|cup|cupp": "elegant hand kiss gentleman",
     "cuddle|cudle|meluk manja|bobo bareng": "elegant cozy embrace",
@@ -68,7 +55,6 @@ module.exports = {
     "high five|hifive|tos": "elegant polite high five",
     "sabar": "calm patience elegant",
 
-    // --- aksi kocak / "berantem" ala meme, dibingkai jadi drama teatrikal ---
     "tampar|geplak|slap": "dramatic theatrical slap elegant",
     "tonjok|pukul|bogem mentah": "dramatic theatrical duel elegant",
     "jitak|jitakin": "playful scold elegant",
@@ -76,7 +62,6 @@ module.exports = {
     "dorong|dorongin": "dramatic theatrical push elegant",
     "kejar|kejar kejaran": "elegant chase ballroom playful",
 
-    // --- gaul & interaksi lainnya ---
     "my bini|bini guweh|bini gw|calon bini": "elegant couple ballroom dance",
     "suami gua|suami guweh|suami gw": "elegant gentleman proposal",
     "apakah ini my|my kisah|kisah": "elegant storytelling narrator",
@@ -92,26 +77,20 @@ module.exports = {
     "wowo|prabowo": "prabowo",
     "takut|takut banget|serem": "elegant startled fan face",
     "mole|login": ["https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHBsYTgwYmU5Y2FjMTI5ZDM3Nm5pdmVrejdyMmQ1YjAzNWF1Yml1YSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/1mhPcNgITnbEnCIaR0/giphy.gif"],
-
-    // Contoh pakai URL langsung tanpa API key (hapus komentar & isi linknya):
-    // "halo|hai": ["https://media.tenor.com/xxxxxxxxxx/hi.gif"],
   },
 
   // Jeda minimum (ms) antar-pengiriman GIF otomatis per channel, biar tidak spam.
   gifCooldown: Number(process.env.GIF_COOLDOWN || 4000),
 
   // === SEBUTAN TUAN/NYONYA BERDASARKAN ROLE SERVER ===
-  // Kalau member punya salah satu role di bawah, bot otomatis pakai sebutan
-  // ini TANPA perlu command manual `!panggilan`. Cocokkan nama role PERSIS
-  // (termasuk emoji/simbolnya) dengan yang ada di server Discord kamu.
+  // Cocokkan nama role PERSIS (termasuk emoji/simbolnya) dengan yang ada
+  // di server Discord kamu.
   ROLE_HONORIFICS: {
     "🜲・Kings": "Tuan",
     "🜲・Cuties🥀": "Nyonya",
   },
 
   // === TES JODOH ===
-  // Tingkatan hasil berdasarkan persentase (dicek dari atas ke bawah,
-  // dipakai yang pertama cocok). Urutan "min" HARUS menurun.
   MATCH_TIERS: [
     { min: 90, text: "Langsung VC aja 💍✨", color: 0xff4d6d },
     { min: 70, text: "COCOK Sih, 😍", color: 0xff8fa3 },
@@ -121,8 +100,6 @@ module.exports = {
   ],
 
   // === KERANG AJAIB ===
-  // Jawaban singkat & acak ala kerang ajaib. Sengaja lebih sering "Tidak"
-  // biar sesuai spirit aslinya yang jawabannya suka nyebelin/ngasal.
   KERANG_ANSWERS: [
     "Tidak.",
     "Tidak.",
