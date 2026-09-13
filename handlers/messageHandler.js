@@ -27,9 +27,6 @@ const SMALL_TALK = {
 };
 
 // Daftar command yang dikenal (termasuk alias Bahasa Indonesia).
-// Dipakai supaya prefix pendek seperti "wo" TIDAK bentrok dengan kata sapaan
-// yang juga diawali "wo" (wo, woy, wowo, dst). Kalau kata setelah prefix
-// bukan salah satu di bawah, pesan dianggap chat biasa, bukan command.
 const COMMAND_ALIASES = {
   help: "help",
   bantuan: "help",
@@ -254,14 +251,8 @@ module.exports = async (message) => {
   const stateKey = `${channelId}:${userId}`;
   const displayName = message.member?.displayName || message.author.username;
 
-  // Rekam SEMUA pesan (bukan cuma yang manggil bot) ke context per-channel,
-  // supaya AI "tau" lagi rame ngobrolin apa di channel ini kalau nanti dipanggil.
   chatContext.record(channelId, displayName, content);
 
-  // COMMAND PREFIX
-  // Command HANYA dianggap valid kalau kata sesudah prefix memang nama
-  // command yang dikenal (lihat COMMAND_ALIASES). Kalau tidak cocok,
-  // lanjut diproses sebagai chat biasa (GIF keyword & sapaan) di bawah.
   if (content.toLowerCase().startsWith(prefix.toLowerCase())) {
     const rest = content.slice(prefix.length).trim();
     const args = rest.split(/\s+/).filter(Boolean);
@@ -276,7 +267,6 @@ module.exports = async (message) => {
         return message.reply("Mohon maaf, tampaknya terjadi kendala saat menjalankan perintah tersebut.");
       }
     }
-    // rawCmd tidak dikenal sebagai command -> cek custom command.
     if (rawCmd && message.guild) {
       const custom = customCommands.get(message.guild.id, rawCmd);
       if (custom) {
@@ -291,7 +281,6 @@ module.exports = async (message) => {
     }
   }
 
-  // GIF OTOMATIS BERDASARKAN KATA KUNCI (berlaku untuk semua pesan, bukan cuma yang manggil bot)
   try {
     const gifUrl = await getGifForMessage(channelId, content);
     if (gifUrl) {
@@ -301,7 +290,6 @@ module.exports = async (message) => {
     console.error("[GIF KEYWORD ERROR]", err);
   }
 
-  // SAPAAN SINGKAT KETIKA BOT DIPANGGIL
   if (!isDirectedAtBot(message)) return;
 
   const lastTime = lastInteraction.get(stateKey) || 0;
@@ -311,13 +299,11 @@ module.exports = async (message) => {
   const normalized = textHelper.normalize(content).replace(/~+/g, "");
   const honorific = genderPrefs.resolveHonorific(message.member, userId); // "Tuan" | "Nyonya" | null
 
-  // Sapaan pendek doang (wo, bro, dst) -> balasan kilat, TANPA manggil AI (hemat token).
   if (SMALL_TALK[normalized]) {
     const base = textHelper.random(SMALL_TALK[normalized]);
     return message.reply(honorific ? `${base} ${honorific}.` : base);
   }
 
-  // Dipanggil dengan isi pesan beneran -> baru lempar ke AI, pakai konteks chat terakhir.
   try {
     const aiReply = await aiChat.reply({
       channelId,
