@@ -21,12 +21,21 @@ function ensureFile() {
   fs.mkdirSync(DATA_DIR, { recursive: true });
   if (!fs.existsSync(DATA_FILE)) fs.writeFileSync(DATA_FILE, "{}\n", "utf8");
 }
+
+// Cache di memori biar TIDAK baca disk (blocking) setiap kali ada yang manggil
+// bot — file cuma dibaca sekali saat start, lalu di-update di memori juga
+// setiap kali ada perubahan (save).
+let cache = null;
+
 function load() {
+  if (cache) return cache;
   ensureFile();
-  try { return JSON.parse(fs.readFileSync(DATA_FILE, "utf8")); }
-  catch { return {}; }
+  try { cache = JSON.parse(fs.readFileSync(DATA_FILE, "utf8")); }
+  catch { cache = {}; }
+  return cache;
 }
 function save(data) {
+  cache = data;
   ensureFile();
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2) + "\n", "utf8");
 }
